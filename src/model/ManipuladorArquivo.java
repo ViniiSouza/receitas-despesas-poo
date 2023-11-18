@@ -4,14 +4,10 @@
  */
 package model;
 
-import java.time.LocalDate;
-
 /**
  *
- * @author crist
+ * @author Vinícius
  */
-public class Receita extends Transacao{
-    public Receita(double saldo, Categoria categoria, LocalDate data) {
-        super(saldo, categoria, data);
-    }
+public class ManipuladorArquivo {
+    
 }

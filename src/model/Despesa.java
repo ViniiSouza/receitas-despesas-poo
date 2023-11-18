@@ -11,22 +11,7 @@ import java.time.LocalDate;
  * @author crist
  */
 public class Despesa extends Transacao{
-    private TipoDespesa tipoDespesa;
-
-    public Despesa(TipoDespesa tipoDespesa, double saldo, Categoria categoria, LocalDate data) {
+    public Despesa(double saldo, Categoria categoria, LocalDate data) {
         super(saldo, categoria, data);
-        this.tipoDespesa = tipoDespesa;
     }
-
-    
-
-    public TipoDespesa getTipoDespesa() {
-        return tipoDespesa;
-    }
-
-    public void setTipoDespesa(TipoDespesa tipoDespesa) {
-        this.tipoDespesa = tipoDespesa;
-    }
-
-    
 }

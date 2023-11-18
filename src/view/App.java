@@ -4,6 +4,22 @@
  */
 package view;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import model.Categoria;
+import model.Despesa;
+import model.Receita;
+import model.TipoReceita;
+
 /**
  *
  * @author crist
@@ -15,6 +31,47 @@ public class App extends javax.swing.JFrame {
      */
     public App() {
         initComponents();
+    }
+    
+    private static boolean validarValorValido(String valorStr) {
+        try {
+            Double.parseDouble(valorStr);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+    private static boolean validarDataValida(String dataStr) {
+        String regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(dataStr);
+
+        return matcher.matches();
+    }
+    
+    private static LocalDate transformarStringData(String dataStr) {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate data;
+        data = LocalDate.parse(dataStr, formato);
+        
+        return data;
+    }
+    
+    private static Categoria transformarStringCategoria(String tipoReceitaStr) {
+        switch (tipoReceitaStr.toLowerCase()) {
+            case "recebimento de salário":
+                return Categoria.SALARIO;
+            case "décimo terceiro":
+                return Categoria.DECIMO_TERCEIRO;
+            case "férias":
+                return Categoria.FERIAS;
+            case "outras receitas":
+                return Categoria.OUTRAS_RECEITAS;
+                // faltam opções despesas
+            default:
+                throw new IllegalArgumentException("O tipo de receita fornecido é inválido!");
+        }
     }
 
     /**
@@ -32,12 +89,16 @@ public class App extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         cbTipoDeDespesa = new javax.swing.JComboBox<>();
         btIncluirDespesa = new javax.swing.JButton();
+        lblDataDespesa = new javax.swing.JLabel();
+        tfDataDespesa = new javax.swing.JTextField();
         PanelIncluirReceita = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         tfValorDaReceita = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        cbTipoDeReceita1 = new javax.swing.JComboBox<>();
+        cbTipoDeReceita = new javax.swing.JComboBox<>();
         btIncluirReceita = new javax.swing.JButton();
+        lblDataReceita = new javax.swing.JLabel();
+        tfDataReceita = new javax.swing.JTextField();
         PanelConsultaDeSaldo = new javax.swing.JPanel();
         btConsultarSaldoAtual = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -81,7 +142,16 @@ public class App extends javax.swing.JFrame {
         btIncluirDespesa.setText("Inlcuir Despesa");
         btIncluirDespesa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aoClicarButtonTeste(evt);
+                btIncluirDespesaActionPerformed(evt);
+            }
+        });
+
+        lblDataDespesa.setText("Data da Despesa: ");
+
+        tfDataDespesa.setToolTipText("Data no formato dia/mês/ano");
+        tfDataDespesa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfDataDespesaActionPerformed(evt);
             }
         });
 
@@ -90,19 +160,28 @@ public class App extends javax.swing.JFrame {
         PanelIncluirDespesaLayout.setHorizontalGroup(
             PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelIncluirDespesaLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
                 .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfValorDaDespesa)
-                    .addComponent(cbTipoDeDespesa, 0, 179, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelIncluirDespesaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PanelIncluirDespesaLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbTipoDeDespesa, 0, 193, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelIncluirDespesaLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btIncluirDespesa)
+                                .addGap(86, 86, 86))))
+                    .addGroup(PanelIncluirDespesaLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(lblDataDespesa))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfValorDaDespesa, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                            .addComponent(tfDataDespesa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelIncluirDespesaLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btIncluirDespesa)
-                .addGap(92, 92, 92))
         );
         PanelIncluirDespesaLayout.setVerticalGroup(
             PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,13 +190,17 @@ public class App extends javax.swing.JFrame {
                 .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(tfValorDaDespesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDataDespesa)
+                    .addComponent(tfDataDespesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(cbTipoDeDespesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btIncluirDespesa)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         PanelIncluirReceita.setBorder(javax.swing.BorderFactory.createTitledBorder("Incluir Receita"));
@@ -132,18 +215,27 @@ public class App extends javax.swing.JFrame {
 
         jLabel5.setText("Tipo de Receita:");
 
-        cbTipoDeReceita1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recebimento de Salário", "Décimo Terceiro", "Férias", "Outras Receitas" }));
-        cbTipoDeReceita1.setToolTipText("");
-        cbTipoDeReceita1.addActionListener(new java.awt.event.ActionListener() {
+        cbTipoDeReceita.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recebimento de Salário", "Décimo Terceiro", "Férias", "Outras Receitas" }));
+        cbTipoDeReceita.setToolTipText("");
+        cbTipoDeReceita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbTipoDeReceita1ActionPerformed(evt);
+                cbTipoDeReceitaActionPerformed(evt);
             }
         });
 
         btIncluirReceita.setText("Inlcuir Receita");
         btIncluirReceita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btIncluirReceitaaoClicarButtonTeste(evt);
+                btIncluirReceitaActionPerformed(evt);
+            }
+        });
+
+        lblDataReceita.setText("Data da Receita: ");
+
+        tfDataReceita.setToolTipText("Data no formato dia/mês/ano");
+        tfDataReceita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfDataReceitaActionPerformed(evt);
             }
         });
 
@@ -153,20 +245,24 @@ public class App extends javax.swing.JFrame {
             PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
                 .addGap(4, 4, 4)
-                .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(lblDataReceita))
+                .addGap(18, 18, 18)
+                .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfDataReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfValorDaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
+            .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfValorDaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(btIncluirReceita))
-                            .addComponent(cbTipoDeReceita1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addComponent(btIncluirReceita))
+                    .addComponent(cbTipoDeReceita, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         PanelIncluirReceitaLayout.setVerticalGroup(
             PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,13 +271,17 @@ public class App extends javax.swing.JFrame {
                 .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(tfValorDaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDataReceita)
+                    .addComponent(tfDataReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(cbTipoDeReceita1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbTipoDeReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btIncluirReceita)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         PanelConsultaDeSaldo.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Saldo"));
@@ -226,10 +326,11 @@ public class App extends javax.swing.JFrame {
             PanelConsultaDeSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaDeSaldoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(PanelConsultaDeSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(btConsultarSaldoAtual)
-                    .addComponent(lbConsultaSaldoDataAtual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(PanelConsultaDeSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbConsultaSaldoDataAtual, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(PanelConsultaDeSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(btConsultarSaldoAtual)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PanelConsultaDeSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -269,7 +370,7 @@ public class App extends javax.swing.JFrame {
             .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
                 .addComponent(btConsultarReceitas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbConsultarReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbConsultarReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -381,17 +482,13 @@ public class App extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PanelIncluirReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PanelIncluirDespesa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PanelConsultaReceita, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(PanelConsultaDespesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(PanelConsultarLancamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(PanelIncluirReceita, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(PanelIncluirDespesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(PanelConsultaDespesa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(PanelConsultaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PanelConsultarLancamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelConsultaDeSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -408,22 +505,13 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbTipoDeDespesaActionPerformed
 
-    private void aoClicarButtonTeste(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aoClicarButtonTeste
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_aoClicarButtonTeste
-
     private void tfValorDaReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorDaReceitaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfValorDaReceitaActionPerformed
 
-    private void cbTipoDeReceita1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoDeReceita1ActionPerformed
+    private void cbTipoDeReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoDeReceitaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbTipoDeReceita1ActionPerformed
-
-    private void btIncluirReceitaaoClicarButtonTeste(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btIncluirReceitaaoClicarButtonTeste
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btIncluirReceitaaoClicarButtonTeste
+    }//GEN-LAST:event_cbTipoDeReceitaActionPerformed
 
     private void btConsultarSaldoAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarSaldoAtualActionPerformed
         // TODO add your handling code here:
@@ -444,6 +532,88 @@ public class App extends javax.swing.JFrame {
     private void btConsultarLancamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarLancamentosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btConsultarLancamentosActionPerformed
+
+    private void btIncluirReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btIncluirReceitaActionPerformed
+        // inclusão de receita
+        var valorFormatado = tfValorDaReceita.getText().replace(',', '.');
+        var dataStr = tfDataReceita.getText();
+        var informacoesInvalidas = false;
+        if (valorFormatado.isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "É necessário informar um valor para cadastrar a receita!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (dataStr.isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "É necessário informar uma data para cadastrar a receita!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (informacoesInvalidas) {
+            return;
+        }
+        if (!validarValorValido(valorFormatado)) {
+            JOptionPane.showMessageDialog(rootPane, "O valor está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (!validarDataValida(dataStr)) {
+            JOptionPane.showMessageDialog(rootPane, "A data está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (informacoesInvalidas) {
+            return;
+        }
+        
+        var data = transformarStringData(dataStr);
+        var categoria = transformarStringCategoria(cbTipoDeReceita.getSelectedItem().toString());
+        
+        Receita receita = new Receita(Double.parseDouble(valorFormatado), categoria, data);
+        
+        // salvar no arquivo
+        
+    }//GEN-LAST:event_btIncluirReceitaActionPerformed
+
+    private void btIncluirDespesaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btIncluirDespesaActionPerformed
+        // inclusão de despesa
+        // inclusão de receita
+        var valorFormatado = tfValorDaDespesa.getText().replace(',', '.');
+        var dataStr = tfDataDespesa.getText();
+        var informacoesInvalidas = false;
+        if (valorFormatado.isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "É necessário informar um valor para cadastrar a despesa!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (dataStr.isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "É necessário informar uma data para cadastrar a despesa!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (informacoesInvalidas) {
+            return;
+        }
+        if (!validarValorValido(valorFormatado)) {
+            JOptionPane.showMessageDialog(rootPane, "O valor está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (!validarDataValida(dataStr)) {
+            JOptionPane.showMessageDialog(rootPane, "A data está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (informacoesInvalidas) {
+            return;
+        }
+        
+        var data = transformarStringData(dataStr);
+        var categoria = transformarStringCategoria(cbTipoDeDespesa.getSelectedItem().toString());
+        
+        Despesa despesa = new Despesa(Double.parseDouble(valorFormatado), categoria, data);
+        
+        // salvar no arquivo
+    }//GEN-LAST:event_btIncluirDespesaActionPerformed
+
+    private void tfDataDespesaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDataDespesaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfDataDespesaActionPerformed
+
+    private void tfDataReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDataReceitaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfDataReceitaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -497,7 +667,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton btIncluirReceita;
     private javax.swing.JComboBox<String> cbTipoDeDespesa;
     private javax.swing.JComboBox<String> cbTipoDeDespesaConsulta;
-    private javax.swing.JComboBox<String> cbTipoDeReceita1;
+    private javax.swing.JComboBox<String> cbTipoDeReceita;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -510,6 +680,10 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel lbConsultaSaldoIndependenteDoPeriodo;
     private javax.swing.JLabel lbConsultarDespesas;
     private javax.swing.JLabel lbConsultarReceita;
+    private javax.swing.JLabel lblDataDespesa;
+    private javax.swing.JLabel lblDataReceita;
+    private javax.swing.JTextField tfDataDespesa;
+    private javax.swing.JTextField tfDataReceita;
     private javax.swing.JTextField tfValorDaDespesa;
     private javax.swing.JTextField tfValorDaReceita;
     // End of variables declaration//GEN-END:variables
