@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import model.Categoria;
+import model.ControleSaldo;
 import model.Despesa;
 import model.ManipuladorArquivo;
 import model.Receita;
@@ -544,6 +545,8 @@ public class App extends javax.swing.JFrame {
 
     private void btConsultarSaldoAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarSaldoAtualActionPerformed
         // TODO add your handling code here:
+        var saldo = ControleSaldo.calcularSaldoAteDataAtual();
+        lbConsultaSaldoDataAtual.setText(String.format("R$ %.2f", saldo));
     }//GEN-LAST:event_btConsultarSaldoAtualActionPerformed
 
     private void btConsultarReceitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarReceitasActionPerformed

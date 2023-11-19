@@ -12,16 +12,16 @@ import java.util.LinkedList;
  * @author crist
  */
 public abstract class Transacao {
-    private double saldo;
+    private double valor;
     private Categoria categoria;
     private LocalDate data;
     private TipoTransacao tipoTransacao;
 
-    public Transacao(double saldo, Categoria categoria, LocalDate data, TipoTransacao tipoTransacao) {
+    public Transacao(double valor, Categoria categoria, LocalDate data, TipoTransacao tipoTransacao) {
         if (!getCategoriasValidas().stream().anyMatch(item -> item.getCodigo().equals(categoria.getCodigo()))) {
             throw new IllegalArgumentException("A categoria fornecida não é válida!");
         }
-        this.saldo = saldo;
+        this.valor = valor;
         this.categoria = categoria;
         this.data = data;
         this.tipoTransacao = tipoTransacao;
@@ -49,12 +49,12 @@ public abstract class Transacao {
         this.data = data;
     }
     
-    public double getSaldo() {
-        return saldo;
+    public double getValor() {
+        return valor;
     }
 
-    protected void setSaldo(double saldo) {
-        this.saldo = saldo;
+    protected void setValor(double valor) {
+        this.valor = valor;
     }
 
 }

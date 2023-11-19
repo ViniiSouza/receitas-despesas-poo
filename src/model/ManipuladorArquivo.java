@@ -38,7 +38,7 @@ public class ManipuladorArquivo {
         for (var item : lista) {
             conteudoArquivo += String.format("\n%s,%s,%s,%s",
                     item.getTipoTransacao().toString(),
-                    Double.toString(item.getSaldo()),
+                    Double.toString(item.getValor()),
                     item.getCategoria().getCodigo(),
                     item.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }

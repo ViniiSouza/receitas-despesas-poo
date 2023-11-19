@@ -21,14 +21,19 @@ public class ControleSaldo {
     }
     
     //Item 3 - Calcular o saldo total com filtro por data (Rever se isso funciona, usei localDate mas pode usar Date)
-    public double calcularSaldoAteDataAtual() {
+    public static double calcularSaldoAteDataAtual() {
         double saldo = 0;
         LocalDate dataAtual = LocalDate.now();
+        var transacoes = ManipuladorArquivo.lerArquivo();
 
-        for (Transacao transacao : lista) {
+        for (Transacao transacao : transacoes) {
             // Verifica se a transação ocorreu até a data de hoje
             if (transacao.getData().isBefore(dataAtual)) {
-                saldo += transacao.getSaldo();
+                var valorTransacao = transacao.getValor();
+                if (transacao.getTipoTransacao() == TipoTransacao.DESPESA)
+                    saldo -= valorTransacao;
+                else
+                    saldo += valorTransacao;
             }
         }
 
@@ -42,7 +47,7 @@ public class ControleSaldo {
         
         for(Transacao transacao : lista)
         {
-            valorTotal += transacao.getSaldo();
+            valorTotal += transacao.getValor();
         }
         
         return valorTotal;
@@ -90,20 +95,20 @@ public class ControleSaldo {
     }*/
     
     // Lista todas as receitas - Requisito numero 6, no caso na implementação temos que ver se o campo nao for utilizado filtro tem q informal null
-    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
-        ArrayList<Despesa> tDespesaFiltrada = new ArrayList<>();
-
-        for (Transacao t : lista) {
-         if (t instanceof Despesa) {
-              Despesa despesa = (Despesa) t;
-              if (tipoFiltrado == null || despesa.getTipoDespesa() == tipoFiltrado) {
-                   tDespesaFiltrada.add(despesa);
-               }
-            }
-        }
-
-        return tDespesaFiltrada;
-    } 
+//    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
+//        ArrayList<Despesa> tDespesaFiltrada = new ArrayList<>();
+//
+//        for (Transacao t : lista) {
+//         if (t instanceof Despesa) {
+//              Despesa despesa = (Despesa) t;
+//              if (tipoFiltrado == null || despesa.getTipoDespesa() == tipoFiltrado) {
+//                   tDespesaFiltrada.add(despesa);
+//               }
+//            }
+//        }
+//
+//        return tDespesaFiltrada;
+//    } 
     
     //Requisito 7 - Lista todos as transações ordenadas por data e atualiza o saldo.
     public ArrayList<Transacao> listaTodosOsLancamentosOrdenadosPorData(){
