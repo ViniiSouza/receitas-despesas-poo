@@ -13,15 +13,15 @@ import java.util.LinkedList;
  * @author crist
  */
 public class Despesa extends Transacao{
-    public Despesa(double saldo, Categoria categoria, LocalDate data) {
-        super(saldo, categoria, data, TipoTransacao.DESPESA);
+    public Despesa(double saldo, TipoTransacao tipo, LocalDate data) {
+        super(saldo, tipo, data, CategoriaTransacao.DESPESA);
     }
 
     @Override
-    public LinkedList<Categoria> getCategoriasValidas() {
-        return new LinkedList<>(Arrays.asList(new Categoria("ALIMENTACAO", "Alimentação"),
-                                                            new Categoria("TRANSPORTE", "Transporte"), new Categoria("RESIDENCIA", "Residência"),
-                                                            new Categoria("SAUDE", "Saúde"), new Categoria("EDUCACAO", "Educação"),
-                                                            new Categoria("ENTRETENIMENTO", "Entretenimento"), new Categoria("OUTRAS_DESPESAS", "Outras Despesas")));
+    public LinkedList<TipoTransacao> getTipoTransacoesValidas() {
+        return new LinkedList<>(Arrays.asList(new TipoTransacao("ALIMENTACAO", "Alimentação"),
+                                                            new TipoTransacao("TRANSPORTE", "Transporte"), new TipoTransacao("RESIDENCIA", "Residência"),
+                                                            new TipoTransacao("SAUDE", "Saúde"), new TipoTransacao("EDUCACAO", "Educação"),
+                                                            new TipoTransacao("ENTRETENIMENTO", "Entretenimento"), new TipoTransacao("OUTRAS", "Outras")));
     }
 }

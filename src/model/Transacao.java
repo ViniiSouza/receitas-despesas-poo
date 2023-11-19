@@ -13,36 +13,36 @@ import java.util.LinkedList;
  */
 public abstract class Transacao {
     private double valor;
-    private Categoria categoria;
-    private LocalDate data;
     private TipoTransacao tipoTransacao;
+    private LocalDate data;
+    private CategoriaTransacao categoria;
 
-    public Transacao(double valor, Categoria categoria, LocalDate data, TipoTransacao tipoTransacao) {
-        if (!getCategoriasValidas().stream().anyMatch(item -> item.getCodigo().equals(categoria.getCodigo()))) {
-            throw new IllegalArgumentException("A categoria fornecida não é válida!");
+    public Transacao(double valor, TipoTransacao categoria, LocalDate data, CategoriaTransacao tipoTransacao) {
+        if (!getTipoTransacoesValidas().stream().anyMatch(item -> item.getCodigo().equals(categoria.getCodigo()))) {
+            throw new IllegalArgumentException("O tipo de transação fornecido não é válido!");
         }
         this.valor = valor;
-        this.categoria = categoria;
+        this.tipoTransacao = categoria;
         this.data = data;
-        this.tipoTransacao = tipoTransacao;
+        this.categoria = tipoTransacao;
     }
     
-    public abstract LinkedList<Categoria> getCategoriasValidas();
+    public abstract LinkedList<TipoTransacao> getTipoTransacoesValidas();
 
-    public Categoria getCategoria() {
-        return categoria;
+    public TipoTransacao getTipoTransacao() {
+        return tipoTransacao;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setTipoTransacao(TipoTransacao tipoTransacao) {
+        this.tipoTransacao = tipoTransacao;
     }
 
     public LocalDate getData() {
         return data;
     }
 
-    public TipoTransacao getTipoTransacao() {
-        return tipoTransacao;
+    public CategoriaTransacao getCategoria() {
+        return categoria;
     }
 
     public void setData(LocalDate data) {

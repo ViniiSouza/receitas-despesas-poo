@@ -20,7 +20,7 @@ import java.util.LinkedList;
  */
 public class ManipuladorArquivo {
     private static final String CAMINHO_ARQUIVO = "C:/Windows/Temp/ReceitaDespesaArquivo.csv";
-    private static final String COLUNAS = "TIPO,VALOR,CATEGORIA,DATA";
+    private static final String COLUNAS = "Categoria;Tipo;Data;Valor";
     
     
     private static void escreverArquivo(String conteudo) {
@@ -36,11 +36,11 @@ public class ManipuladorArquivo {
         lista.add(transacao);
         String conteudoArquivo = COLUNAS;
         for (var item : lista) {
-            conteudoArquivo += String.format("\n%s,%s,%s,%s",
-                    item.getTipoTransacao().toString(),
-                    Double.toString(item.getValor()),
-                    item.getCategoria().getCodigo(),
-                    item.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            conteudoArquivo += String.format("\n%s;%s;%s;%s",
+                    item.getCategoria().toString(),
+                    item.getTipoTransacao().getCodigo(),
+                    item.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    Double.toString(item.getValor()));
         }
         
         escreverArquivo(conteudoArquivo);
@@ -60,16 +60,16 @@ public class ManipuladorArquivo {
                     cabecalho = false;
                     continue;
                 }
-                var item = linha.split(",");
-                var tipo = TipoTransacao.valueOf(item[0]);
-                var saldo = Double.parseDouble(item[1]);
-                var categoria = Categoria.getCategoriaPorCodigo(item[2]);
-                LocalDate data = LocalDate.parse(item[3], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                if (tipo == TipoTransacao.DESPESA) {
-                    var despesa = new Despesa(saldo, categoria, data);
+                var item = linha.split(";");
+                var categoria = CategoriaTransacao.valueOf(item[0]);
+                var tipo = TipoTransacao.getTipoTransacaoPorCodigo(item[1]);
+                LocalDate data = LocalDate.parse(item[2], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                var saldo = Double.parseDouble(item[3]);
+                if (categoria == CategoriaTransacao.DESPESA) {
+                    var despesa = new Despesa(saldo, tipo, data);
                     lista.add(despesa);
                 } else {
-                    var receita = new Receita(saldo, categoria, data);
+                    var receita = new Receita(saldo, tipo, data);
                     lista.add(receita);
                 }
             }

@@ -15,13 +15,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import model.Categoria;
+import model.TipoTransacao;
 import model.ControleSaldo;
 import model.Despesa;
 import model.ManipuladorArquivo;
 import model.Receita;
 import model.TipoReceita;
-import model.TipoTransacao;
+import model.CategoriaTransacao;
 import model.Transacao;
 
 /**
@@ -62,7 +62,7 @@ public class App extends javax.swing.JFrame {
         return data;
     }
     
-    private boolean cadastrarTransacao(String valorFormatado, String dataTransacao, String descricaoTipo, TipoTransacao tipoTransacao) {
+    private boolean cadastrarTransacao(String valorFormatado, String dataTransacao, String descricaoTipo, CategoriaTransacao tipoTransacao) {
         var informacoesInvalidas = false;
         if (valorFormatado.isBlank()) {
             JOptionPane.showMessageDialog(rootPane, "É necessário informar um valor para cadastrar a transação!", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -88,10 +88,10 @@ public class App extends javax.swing.JFrame {
         }
         
         var data = transformarStringData(dataTransacao);
-        var categoria = Categoria.getCategoriaPorDescricao(descricaoTipo);
+        var categoria = TipoTransacao.getTipoTransacaoPorDescricao(descricaoTipo);
         Transacao transacao;
         
-        if (tipoTransacao == TipoTransacao.DESPESA) {
+        if (tipoTransacao == CategoriaTransacao.DESPESA) {
             transacao = new Despesa(Double.parseDouble(valorFormatado), categoria, data);
         } else {
             transacao = new Receita(Double.parseDouble(valorFormatado), categoria, data);
@@ -137,8 +137,9 @@ public class App extends javax.swing.JFrame {
         lbConsultaSaldoDataAtual = new javax.swing.JLabel();
         lbConsultaSaldoIndependenteDoPeriodo = new javax.swing.JLabel();
         PanelConsultaReceita = new javax.swing.JPanel();
-        lbConsultarReceita = new javax.swing.JLabel();
         btConsultarReceitas = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        taConsultarReceita = new javax.swing.JTextArea();
         PanelConsultaDespesa = new javax.swing.JPanel();
         cbTipoDeDespesaConsulta = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
@@ -162,7 +163,7 @@ public class App extends javax.swing.JFrame {
 
         jLabel3.setText("Tipo da Despesa");
 
-        cbTipoDeDespesa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Alimentação", "Transporte", "Residência", "Saúde", "Educação", "Entretenimento", "Outras Despesas" }));
+        cbTipoDeDespesa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Alimentação", "Transporte", "Residência", "Saúde", "Educação", "Entretenimento", "Outras" }));
         cbTipoDeDespesa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTipoDeDespesaActionPerformed(evt);
@@ -245,7 +246,7 @@ public class App extends javax.swing.JFrame {
 
         jLabel5.setText("Tipo de Receita:");
 
-        cbTipoDeReceita.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recebimento de Salário", "Décimo Terceiro", "Férias", "Outras Receitas" }));
+        cbTipoDeReceita.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recebimento de Salário", "Décimo Terceiro", "Férias", "Outras" }));
         cbTipoDeReceita.setToolTipText("");
         cbTipoDeReceita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,7 +312,7 @@ public class App extends javax.swing.JFrame {
                     .addComponent(cbTipoDeReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btIncluirReceita)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         PanelConsultaDeSaldo.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Saldo"));
@@ -328,6 +329,11 @@ public class App extends javax.swing.JFrame {
         jLabel6.setText("Consultar saldo independente do período:");
 
         btConsultarSaldoIndependenteDaData.setText("Consultar");
+        btConsultarSaldoIndependenteDaData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btConsultarSaldoIndependenteDaDataActionPerformed(evt);
+            }
+        });
 
         lbConsultaSaldoDataAtual.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -372,9 +378,6 @@ public class App extends javax.swing.JFrame {
 
         PanelConsultaReceita.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Receitas"));
 
-        lbConsultarReceita.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbConsultarReceita.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
         btConsultarReceitas.setText("Consultar Receitas");
         btConsultarReceitas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -382,25 +385,31 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        taConsultarReceita.setEditable(false);
+        taConsultarReceita.setColumns(20);
+        taConsultarReceita.setRows(5);
+        jScrollPane1.setViewportView(taConsultarReceita);
+
         javax.swing.GroupLayout PanelConsultaReceitaLayout = new javax.swing.GroupLayout(PanelConsultaReceita);
         PanelConsultaReceita.setLayout(PanelConsultaReceitaLayout);
         PanelConsultaReceitaLayout.setHorizontalGroup(
             PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(btConsultarReceitas)
-                .addContainerGap(63, Short.MAX_VALUE))
-            .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbConsultarReceita, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(btConsultarReceitas))
+                    .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PanelConsultaReceitaLayout.setVerticalGroup(
             PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
                 .addComponent(btConsultarReceitas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbConsultarReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -471,7 +480,7 @@ public class App extends javax.swing.JFrame {
             .addGroup(PanelConsultarLancamentosLayout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addComponent(btConsultarLancamentos)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         PanelConsultarLancamentosLayout.setVerticalGroup(
             PanelConsultarLancamentosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -517,7 +526,7 @@ public class App extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(PanelConsultaDespesa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelConsultaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PanelConsultaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PanelConsultarLancamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelConsultaDeSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -551,6 +560,12 @@ public class App extends javax.swing.JFrame {
 
     private void btConsultarReceitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarReceitasActionPerformed
         // TODO add your handling code here:
+        var receitas = ControleSaldo.retornaTransacoesDeReceita();
+        String lista = "DATA -------------- TIPO TRANSAÇÃO ------------ VALOR\n";
+        for (var receita : receitas) {
+            lista += String.format("\n%s    %s    R$ %.2f", receita.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), receita.getTipoTransacao().getDescricao(), receita.getValor());
+        }
+        taConsultarReceita.setText(lista);
     }//GEN-LAST:event_btConsultarReceitasActionPerformed
 
     private void cbTipoDeDespesaConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoDeDespesaConsultaActionPerformed
@@ -569,7 +584,7 @@ public class App extends javax.swing.JFrame {
         // inclusão de receita
         var valorFormatado = tfValorDaReceita.getText().replace(',', '.');
         var dataStr = tfDataReceita.getText();
-        var cadastrado = cadastrarTransacao(valorFormatado, dataStr, cbTipoDeReceita.getSelectedItem().toString(), TipoTransacao.RECEITA);
+        var cadastrado = cadastrarTransacao(valorFormatado, dataStr, cbTipoDeReceita.getSelectedItem().toString(), CategoriaTransacao.RECEITA);
         if (cadastrado) {
             JOptionPane.showMessageDialog(rootPane, "Receita cadastrada com sucesso!");
         }
@@ -579,7 +594,7 @@ public class App extends javax.swing.JFrame {
         // inclusão de despesa
         var valorFormatado = tfValorDaDespesa.getText().replace(',', '.');
         var dataStr = tfDataDespesa.getText();
-        var cadastrado = cadastrarTransacao(valorFormatado, dataStr, cbTipoDeDespesa.getSelectedItem().toString(), TipoTransacao.DESPESA);
+        var cadastrado = cadastrarTransacao(valorFormatado, dataStr, cbTipoDeDespesa.getSelectedItem().toString(), CategoriaTransacao.DESPESA);
         if (cadastrado) {
             JOptionPane.showMessageDialog(rootPane, "Despesa cadastrada com sucesso!");
         }
@@ -592,6 +607,12 @@ public class App extends javax.swing.JFrame {
     private void tfDataReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDataReceitaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfDataReceitaActionPerformed
+
+    private void btConsultarSaldoIndependenteDaDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarSaldoIndependenteDaDataActionPerformed
+        // TODO add your handling code here:
+        var saldo = ControleSaldo.calcularTotalSaldo();
+        lbConsultaSaldoIndependenteDoPeriodo.setText(String.format("R$ %.2f", saldo));
+    }//GEN-LAST:event_btConsultarSaldoIndependenteDaDataActionPerformed
 
     /**
      * @param args the command line arguments
@@ -653,13 +674,14 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbConsultaDeLançamentos;
     private javax.swing.JLabel lbConsultaSaldoDataAtual;
     private javax.swing.JLabel lbConsultaSaldoIndependenteDoPeriodo;
     private javax.swing.JLabel lbConsultarDespesas;
-    private javax.swing.JLabel lbConsultarReceita;
     private javax.swing.JLabel lblDataDespesa;
     private javax.swing.JLabel lblDataReceita;
+    private javax.swing.JTextArea taConsultarReceita;
     private javax.swing.JTextField tfDataDespesa;
     private javax.swing.JTextField tfDataReceita;
     private javax.swing.JTextField tfValorDaDespesa;
