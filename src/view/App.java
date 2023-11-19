@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -145,7 +146,8 @@ public class App extends javax.swing.JFrame {
         cbTipoDeDespesaConsulta = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
         btConsultarDespesas = new javax.swing.JButton();
-        lbConsultarDespesas = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tbConsultarDespesaFiltrada = new javax.swing.JTable();
         PanelConsultarLancamentos = new javax.swing.JPanel();
         lbConsultaDeLançamentos = new javax.swing.JLabel();
         btConsultarLancamentos = new javax.swing.JButton();
@@ -171,7 +173,7 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        btIncluirDespesa.setText("Inlcuir Despesa");
+        btIncluirDespesa.setText("Incluir Despesa");
         btIncluirDespesa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIncluirDespesaActionPerformed(evt);
@@ -192,27 +194,19 @@ public class App extends javax.swing.JFrame {
         PanelIncluirDespesaLayout.setHorizontalGroup(
             PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelIncluirDespesaLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelIncluirDespesaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PanelIncluirDespesaLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(cbTipoDeDespesa, 0, 193, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelIncluirDespesaLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btIncluirDespesa)
-                                .addGap(86, 86, 86))))
+                    .addComponent(lblDataDespesa)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2))
+                .addGap(10, 10, 10)
+                .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PanelIncluirDespesaLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(lblDataDespesa))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PanelIncluirDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfValorDaDespesa, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                            .addComponent(tfDataDespesa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))))
+                        .addComponent(btIncluirDespesa)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(cbTipoDeDespesa, 0, 197, Short.MAX_VALUE)
+                    .addComponent(tfValorDaDespesa)
+                    .addComponent(tfDataDespesa, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         PanelIncluirDespesaLayout.setVerticalGroup(
@@ -255,7 +249,7 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        btIncluirReceita.setText("Inlcuir Receita");
+        btIncluirReceita.setText("Incluir Receita");
         btIncluirReceita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIncluirReceitaActionPerformed(evt);
@@ -276,25 +270,19 @@ public class App extends javax.swing.JFrame {
         PanelIncluirReceitaLayout.setHorizontalGroup(
             PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
-                .addGap(4, 4, 4)
+                .addContainerGap()
                 .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addComponent(lblDataReceita))
-                .addGap(18, 18, 18)
+                    .addComponent(lblDataReceita)
+                    .addComponent(jLabel5))
+                .addGap(16, 16, 16)
                 .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfDataReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfValorDaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
-            .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelIncluirReceitaLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(btIncluirReceita))
-                    .addComponent(cbTipoDeReceita, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(btIncluirReceita)
+                    .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(tfDataReceita, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                        .addComponent(tfValorDaReceita, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                        .addComponent(cbTipoDeReceita, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         PanelIncluirReceitaLayout.setVerticalGroup(
             PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,11 +297,11 @@ public class App extends javax.swing.JFrame {
                     .addComponent(tfDataReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PanelIncluirReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(cbTipoDeReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(cbTipoDeReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btIncluirReceita)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         PanelConsultaDeSaldo.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Saldo"));
@@ -422,20 +410,20 @@ public class App extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelConsultaReceitaLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btConsultarReceitas)
-                .addGap(96, 96, 96))
+                .addGap(103, 103, 103))
         );
         PanelConsultaReceitaLayout.setVerticalGroup(
             PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
                 .addComponent(btConsultarReceitas)
-                .addGap(18, 18, 18)
+                .addGap(33, 33, 33)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         PanelConsultaDespesa.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Despesa"));
 
-        cbTipoDeDespesaConsulta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Alimentação", "Transporte", "Residência", "Saúde", "Educação", "Entretenimento", "Outras Despesas" }));
+        cbTipoDeDespesaConsulta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Alimentação", "Transporte", "Residência", "Saúde", "Educação", "Entretenimento", "Outras Despesas" }));
         cbTipoDeDespesaConsulta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTipoDeDespesaConsultaActionPerformed(evt);
@@ -451,21 +439,47 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        tbConsultarDespesaFiltrada.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Data", "Tipo Transação", "Valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tbConsultarDespesaFiltrada);
+
         javax.swing.GroupLayout PanelConsultaDespesaLayout = new javax.swing.GroupLayout(PanelConsultaDespesa);
         PanelConsultaDespesa.setLayout(PanelConsultaDespesaLayout);
         PanelConsultaDespesaLayout.setHorizontalGroup(
             PanelConsultaDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaDespesaLayout.createSequentialGroup()
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(PanelConsultaDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btConsultarDespesas, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(cbTipoDeDespesaConsulta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelConsultaDespesaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbConsultarDespesas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(PanelConsultaDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelConsultaDespesaLayout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(PanelConsultaDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btConsultarDespesas, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                            .addComponent(cbTipoDeDespesaConsulta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(PanelConsultaDespesaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
         PanelConsultaDespesaLayout.setVerticalGroup(
             PanelConsultaDespesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -475,9 +489,9 @@ public class App extends javax.swing.JFrame {
                     .addComponent(cbTipoDeDespesaConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btConsultarDespesas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbConsultarDespesas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         PanelConsultarLancamentos.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Lançamentos"));
@@ -519,9 +533,9 @@ public class App extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addComponent(PanelConsultaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(179, 179, 179)
+                        .addGap(50, 50, 50)
                         .addComponent(PanelConsultaDespesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(147, 147, 147)
                         .addComponent(PanelConsultarLancamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -582,6 +596,7 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
         var receitas = ControleSaldo.retornaTransacoesDeReceita();
         DefaultTableModel modelo = (DefaultTableModel) tbConsultarReceita.getModel();
+        modelo.setRowCount(0);
         var modeloColuna = tbConsultarReceita.getColumnModel();
         modeloColuna.getColumn(0).setPreferredWidth(25);
         modeloColuna.getColumn(1).setPreferredWidth(100);
@@ -599,6 +614,27 @@ public class App extends javax.swing.JFrame {
 
     private void btConsultarDespesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarDespesasActionPerformed
         // TODO add your handling code here:
+        LinkedList<Transacao> despesas;
+        try {
+            var teste = cbTipoDeDespesaConsulta.getSelectedItem().toString();
+            var tipo = TipoTransacao.getTipoTransacaoPorDescricao(cbTipoDeDespesaConsulta.getSelectedItem().toString());
+            despesas = ControleSaldo.retornaTransacoesDeDespesa(tipo);
+        }
+        catch (IllegalArgumentException e) {
+            despesas = ControleSaldo.retornaTransacoesDeDespesa(null);
+        }
+        
+        DefaultTableModel modelo = (DefaultTableModel) tbConsultarDespesaFiltrada.getModel();
+        modelo.setRowCount(0);
+        var modeloColuna = tbConsultarDespesaFiltrada.getColumnModel();
+        modeloColuna.getColumn(0).setPreferredWidth(25);
+        modeloColuna.getColumn(1).setPreferredWidth(100);
+        modeloColuna.getColumn(2).setPreferredWidth(35);
+        for (var despesa : despesas) {
+            modelo.addRow(new Object[]{despesa.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                        despesa.getTipoTransacao().getDescricao(),
+                                        String.format("R$ %.2f", despesa.getValor())});
+        }
     }//GEN-LAST:event_btConsultarDespesasActionPerformed
 
     private void btConsultarLancamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarLancamentosActionPerformed
@@ -700,12 +736,13 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lbConsultaDeLançamentos;
     private javax.swing.JLabel lbConsultaSaldoDataAtual;
     private javax.swing.JLabel lbConsultaSaldoIndependenteDoPeriodo;
-    private javax.swing.JLabel lbConsultarDespesas;
     private javax.swing.JLabel lblDataDespesa;
     private javax.swing.JLabel lblDataReceita;
+    private javax.swing.JTable tbConsultarDespesaFiltrada;
     private javax.swing.JTable tbConsultarReceita;
     private javax.swing.JTextField tfDataDespesa;
     private javax.swing.JTextField tfDataReceita;

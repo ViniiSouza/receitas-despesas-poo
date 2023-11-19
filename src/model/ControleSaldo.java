@@ -57,33 +57,28 @@ public class ControleSaldo {
         return new LinkedList<>(listaReceitas);
     }
     
-    // Lista todas as receitas - Requisito numero 6
-    /*public ArrayList<Transacao> retornaTransacoesDeDespesa(){
-        ArrayList<Transacao> tDespesa = new ArrayList<>();
+    // Lista todas as despesas permitindo filtre o tipo - Requisito numero 6
+    public static LinkedList<Transacao> retornaTransacoesDeDespesa(TipoTransacao tipo){
+        var transacoes = ManipuladorArquivo.lerArquivo();
+        var despesas = transacoes.stream().filter(item -> item.getCategoria() == CategoriaTransacao.DESPESA && (tipo == null || item.getTipoTransacao().getCodigo().equals(tipo.getCodigo()))).collect(Collectors.toList());
         
-        for(Transacao t : lista){
-            if(t instanceof Despesa){
-                tDespesa.add(t);
-            }
-        }
-        
-        return tDespesa;
+        return new LinkedList<>(despesas);
     }
     
-    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
-        ArrayList<Despesa> tDespesaFiltrada = new ArrayList<>();
-
-        for (Transacao t : lista) {
-            if (t instanceof Despesa) {
-                Despesa despesa = (Despesa) t;
-                if (despesa.getTipoDespesa() == tipoFiltrado) {
-                    tDespesaFiltrada.add(despesa);
-                }
-            }
-        }
-
-        return tDespesaFiltrada;
-    }*/
+//    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
+//        ArrayList<Despesa> tDespesaFiltrada = new ArrayList<>();
+//
+//        for (Transacao t : lista) {
+//            if (t instanceof Despesa) {
+//                Despesa despesa = (Despesa) t;
+//                if (despesa.getTipoDespesa() == tipoFiltrado) {
+//                    tDespesaFiltrada.add(despesa);
+//                }
+//            }
+//        }
+//
+//        return tDespesaFiltrada;
+//    }
     
     // Lista todas as receitas - Requisito numero 6, no caso na implementação temos que ver se o campo nao for utilizado filtro tem q informal null
 //    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
