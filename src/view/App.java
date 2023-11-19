@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import model.TipoTransacao;
 import model.ControleSaldo;
 import model.Despesa;
@@ -138,8 +139,8 @@ public class App extends javax.swing.JFrame {
         lbConsultaSaldoIndependenteDoPeriodo = new javax.swing.JLabel();
         PanelConsultaReceita = new javax.swing.JPanel();
         btConsultarReceitas = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        taConsultarReceita = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbConsultarReceita = new javax.swing.JTable();
         PanelConsultaDespesa = new javax.swing.JPanel();
         cbTipoDeDespesaConsulta = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
@@ -385,31 +386,50 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        taConsultarReceita.setEditable(false);
-        taConsultarReceita.setColumns(20);
-        taConsultarReceita.setRows(5);
-        jScrollPane1.setViewportView(taConsultarReceita);
+        tbConsultarReceita.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Data", "Tipo Transação", "Valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tbConsultarReceita);
 
         javax.swing.GroupLayout PanelConsultaReceitaLayout = new javax.swing.GroupLayout(PanelConsultaReceita);
         PanelConsultaReceita.setLayout(PanelConsultaReceitaLayout);
         PanelConsultaReceitaLayout.setHorizontalGroup(
             PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
-                .addGroup(PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
-                        .addGap(64, 64, 64)
-                        .addComponent(btConsultarReceitas))
-                    .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelConsultaReceitaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btConsultarReceitas)
+                .addGap(96, 96, 96))
         );
         PanelConsultaReceitaLayout.setVerticalGroup(
             PanelConsultaReceitaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelConsultaReceitaLayout.createSequentialGroup()
                 .addComponent(btConsultarReceitas)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -480,7 +500,7 @@ public class App extends javax.swing.JFrame {
             .addGroup(PanelConsultarLancamentosLayout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addComponent(btConsultarLancamentos)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PanelConsultarLancamentosLayout.setVerticalGroup(
             PanelConsultarLancamentosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -499,7 +519,7 @@ public class App extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addComponent(PanelConsultaReceita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(179, 179, 179)
                         .addComponent(PanelConsultaDespesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(PanelConsultarLancamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -561,11 +581,16 @@ public class App extends javax.swing.JFrame {
     private void btConsultarReceitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarReceitasActionPerformed
         // TODO add your handling code here:
         var receitas = ControleSaldo.retornaTransacoesDeReceita();
-        String lista = "DATA -------------- TIPO TRANSAÇÃO ------------ VALOR\n";
+        DefaultTableModel modelo = (DefaultTableModel) tbConsultarReceita.getModel();
+        var modeloColuna = tbConsultarReceita.getColumnModel();
+        modeloColuna.getColumn(0).setPreferredWidth(25);
+        modeloColuna.getColumn(1).setPreferredWidth(100);
+        modeloColuna.getColumn(2).setPreferredWidth(35);
         for (var receita : receitas) {
-            lista += String.format("\n%s    %s    R$ %.2f", receita.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), receita.getTipoTransacao().getDescricao(), receita.getValor());
+            modelo.addRow(new Object[]{receita.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                        receita.getTipoTransacao().getDescricao(),
+                                        String.format("R$ %.2f", receita.getValor())});
         }
-        taConsultarReceita.setText(lista);
     }//GEN-LAST:event_btConsultarReceitasActionPerformed
 
     private void cbTipoDeDespesaConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoDeDespesaConsultaActionPerformed
@@ -674,14 +699,14 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbConsultaDeLançamentos;
     private javax.swing.JLabel lbConsultaSaldoDataAtual;
     private javax.swing.JLabel lbConsultaSaldoIndependenteDoPeriodo;
     private javax.swing.JLabel lbConsultarDespesas;
     private javax.swing.JLabel lblDataDespesa;
     private javax.swing.JLabel lblDataReceita;
-    private javax.swing.JTextArea taConsultarReceita;
+    private javax.swing.JTable tbConsultarReceita;
     private javax.swing.JTextField tfDataDespesa;
     private javax.swing.JTextField tfDataReceita;
     private javax.swing.JTextField tfValorDaDespesa;
