@@ -5,6 +5,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 
 /**
  *
@@ -14,12 +15,19 @@ public abstract class Transacao {
     private double saldo;
     private Categoria categoria;
     private LocalDate data;
+    private TipoTransacao tipoTransacao;
 
-    public Transacao(double saldo, Categoria categoria, LocalDate data) {
+    public Transacao(double saldo, Categoria categoria, LocalDate data, TipoTransacao tipoTransacao) {
+        if (!getCategoriasValidas().stream().anyMatch(item -> item.getCodigo().equals(categoria.getCodigo()))) {
+            throw new IllegalArgumentException("A categoria fornecida não é válida!");
+        }
         this.saldo = saldo;
         this.categoria = categoria;
         this.data = data;
+        this.tipoTransacao = tipoTransacao;
     }
+    
+    public abstract LinkedList<Categoria> getCategoriasValidas();
 
     public Categoria getCategoria() {
         return categoria;
@@ -31,6 +39,10 @@ public abstract class Transacao {
 
     public LocalDate getData() {
         return data;
+    }
+
+    public TipoTransacao getTipoTransacao() {
+        return tipoTransacao;
     }
 
     public void setData(LocalDate data) {

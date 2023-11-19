@@ -17,8 +17,11 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import model.Categoria;
 import model.Despesa;
+import model.ManipuladorArquivo;
 import model.Receita;
 import model.TipoReceita;
+import model.TipoTransacao;
+import model.Transacao;
 
 /**
  *
@@ -58,22 +61,48 @@ public class App extends javax.swing.JFrame {
         return data;
     }
     
-    private static Categoria transformarStringCategoria(String tipoReceitaStr) {
-        switch (tipoReceitaStr.toLowerCase()) {
-            case "recebimento de salário":
-                return Categoria.SALARIO;
-            case "décimo terceiro":
-                return Categoria.DECIMO_TERCEIRO;
-            case "férias":
-                return Categoria.FERIAS;
-            case "outras receitas":
-                return Categoria.OUTRAS_RECEITAS;
-                // faltam opções despesas
-            default:
-                throw new IllegalArgumentException("O tipo de receita fornecido é inválido!");
+    private boolean cadastrarTransacao(String valorFormatado, String dataTransacao, String descricaoTipo, TipoTransacao tipoTransacao) {
+        var informacoesInvalidas = false;
+        if (valorFormatado.isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "É necessário informar um valor para cadastrar a transação!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            informacoesInvalidas = true;
         }
-    }
+        if (dataTransacao.isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "É necessário informar uma data para cadastrar a transação!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (informacoesInvalidas) {
+            return false;
+        }
+        if (!validarValorValido(valorFormatado)) {
+            JOptionPane.showMessageDialog(rootPane, "O valor está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (!validarDataValida(dataTransacao)) {
+            JOptionPane.showMessageDialog(rootPane, "A data está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            informacoesInvalidas = true;
+        }
+        if (informacoesInvalidas) {
+            return false;
+        }
+        
+        var data = transformarStringData(dataTransacao);
+        var categoria = Categoria.getCategoriaPorDescricao(descricaoTipo);
+        Transacao transacao;
+        
+        if (tipoTransacao == TipoTransacao.DESPESA) {
+            transacao = new Despesa(Double.parseDouble(valorFormatado), categoria, data);
+        } else {
+            transacao = new Receita(Double.parseDouble(valorFormatado), categoria, data);
+        }
 
+        // salvar no arquivo        
+        ManipuladorArquivo.incluirTransacao(transacao);
+        
+        return true;
+    }
+        
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -537,74 +566,20 @@ public class App extends javax.swing.JFrame {
         // inclusão de receita
         var valorFormatado = tfValorDaReceita.getText().replace(',', '.');
         var dataStr = tfDataReceita.getText();
-        var informacoesInvalidas = false;
-        if (valorFormatado.isBlank()) {
-            JOptionPane.showMessageDialog(rootPane, "É necessário informar um valor para cadastrar a receita!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            informacoesInvalidas = true;
+        var cadastrado = cadastrarTransacao(valorFormatado, dataStr, cbTipoDeReceita.getSelectedItem().toString(), TipoTransacao.RECEITA);
+        if (cadastrado) {
+            JOptionPane.showMessageDialog(rootPane, "Receita cadastrada com sucesso!");
         }
-        if (dataStr.isBlank()) {
-            JOptionPane.showMessageDialog(rootPane, "É necessário informar uma data para cadastrar a receita!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            informacoesInvalidas = true;
-        }
-        if (informacoesInvalidas) {
-            return;
-        }
-        if (!validarValorValido(valorFormatado)) {
-            JOptionPane.showMessageDialog(rootPane, "O valor está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
-            informacoesInvalidas = true;
-        }
-        if (!validarDataValida(dataStr)) {
-            JOptionPane.showMessageDialog(rootPane, "A data está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
-            informacoesInvalidas = true;
-        }
-        if (informacoesInvalidas) {
-            return;
-        }
-        
-        var data = transformarStringData(dataStr);
-        var categoria = transformarStringCategoria(cbTipoDeReceita.getSelectedItem().toString());
-        
-        Receita receita = new Receita(Double.parseDouble(valorFormatado), categoria, data);
-        
-        // salvar no arquivo
-        
     }//GEN-LAST:event_btIncluirReceitaActionPerformed
 
     private void btIncluirDespesaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btIncluirDespesaActionPerformed
         // inclusão de despesa
-        // inclusão de receita
         var valorFormatado = tfValorDaDespesa.getText().replace(',', '.');
         var dataStr = tfDataDespesa.getText();
-        var informacoesInvalidas = false;
-        if (valorFormatado.isBlank()) {
-            JOptionPane.showMessageDialog(rootPane, "É necessário informar um valor para cadastrar a despesa!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            informacoesInvalidas = true;
+        var cadastrado = cadastrarTransacao(valorFormatado, dataStr, cbTipoDeDespesa.getSelectedItem().toString(), TipoTransacao.DESPESA);
+        if (cadastrado) {
+            JOptionPane.showMessageDialog(rootPane, "Despesa cadastrada com sucesso!");
         }
-        if (dataStr.isBlank()) {
-            JOptionPane.showMessageDialog(rootPane, "É necessário informar uma data para cadastrar a despesa!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            informacoesInvalidas = true;
-        }
-        if (informacoesInvalidas) {
-            return;
-        }
-        if (!validarValorValido(valorFormatado)) {
-            JOptionPane.showMessageDialog(rootPane, "O valor está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
-            informacoesInvalidas = true;
-        }
-        if (!validarDataValida(dataStr)) {
-            JOptionPane.showMessageDialog(rootPane, "A data está em um formato inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
-            informacoesInvalidas = true;
-        }
-        if (informacoesInvalidas) {
-            return;
-        }
-        
-        var data = transformarStringData(dataStr);
-        var categoria = transformarStringCategoria(cbTipoDeDespesa.getSelectedItem().toString());
-        
-        Despesa despesa = new Despesa(Double.parseDouble(valorFormatado), categoria, data);
-        
-        // salvar no arquivo
     }//GEN-LAST:event_btIncluirDespesaActionPerformed
 
     private void tfDataDespesaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDataDespesaActionPerformed
