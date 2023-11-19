@@ -5,7 +5,6 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class ControleSaldo {
     
-    //Item 3 - Calcular o saldo total com filtro por data (Rever se isso funciona, usei localDate mas pode usar Date)
+    // 3) Consultar o saldo que a pessoa tem disponível até a data atual;
     public static double calcularSaldoAteDataAtual() {
         LocalDate dataAtual = LocalDate.now();
         var transacoes = ManipuladorArquivo.lerArquivo();
@@ -25,7 +24,7 @@ public class ControleSaldo {
         return saldo;
     }
     
-    //Item 4 - Calcular o salto total independente da data
+    // 4) Consultar o saldo que a pessoa terá disponível, independente do período;
     public static double calcularTotalSaldo()
     {
         var transacoes = ManipuladorArquivo.lerArquivo();
@@ -48,8 +47,7 @@ public class ControleSaldo {
         return saldo;
     }
     
-    
-    // Lista todas as receitas - Requisito numero 5
+    // 5) Listar todas as receitas lançadas;
     public static LinkedList<Transacao> retornaTransacoesDeReceita(){
         var transacoes = ManipuladorArquivo.lerArquivo();
         var listaReceitas = transacoes.stream().filter(item -> item.getCategoria() == CategoriaTransacao.RECEITA).collect(Collectors.toList());
@@ -57,54 +55,11 @@ public class ControleSaldo {
         return new LinkedList<>(listaReceitas);
     }
     
-    // Lista todas as despesas permitindo filtre o tipo - Requisito numero 6
+    // 6) Listar todas as despesas lançadas, possibilitando que o usuário filtre por tipo de despesa;
     public static LinkedList<Transacao> retornaTransacoesDeDespesa(TipoTransacao tipo){
         var transacoes = ManipuladorArquivo.lerArquivo();
         var despesas = transacoes.stream().filter(item -> item.getCategoria() == CategoriaTransacao.DESPESA && (tipo == null || item.getTipoTransacao().getCodigo().equals(tipo.getCodigo()))).collect(Collectors.toList());
         
         return new LinkedList<>(despesas);
     }
-    
-//    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
-//        ArrayList<Despesa> tDespesaFiltrada = new ArrayList<>();
-//
-//        for (Transacao t : lista) {
-//            if (t instanceof Despesa) {
-//                Despesa despesa = (Despesa) t;
-//                if (despesa.getTipoDespesa() == tipoFiltrado) {
-//                    tDespesaFiltrada.add(despesa);
-//                }
-//            }
-//        }
-//
-//        return tDespesaFiltrada;
-//    }
-    
-    // Lista todas as receitas - Requisito numero 6, no caso na implementação temos que ver se o campo nao for utilizado filtro tem q informal null
-//    public ArrayList<Despesa> retornaTransacoesDeDespesaFiltrada(TipoDespesa tipoFiltrado) {
-//        ArrayList<Despesa> tDespesaFiltrada = new ArrayList<>();
-//
-//        for (Transacao t : lista) {
-//         if (t instanceof Despesa) {
-//              Despesa despesa = (Despesa) t;
-//              if (tipoFiltrado == null || despesa.getTipoDespesa() == tipoFiltrado) {
-//                   tDespesaFiltrada.add(despesa);
-//               }
-//            }
-//        }
-//
-//        return tDespesaFiltrada;
-//    } 
-    
-    //Requisito 7 - Lista todos as transações ordenadas por data e atualiza o saldo.
-//    public ArrayList<Transacao> listaTodosOsLancamentosOrdenadosPorData(){
-//        ArrayList<Transacao> transacoes = getItens();
-//        
-//        transacoes.sort((t1, t2) -> t1.getData().compareTo(t2.getData()));
-//        calcularSaldoAteDataAtual();
-//        
-//        return transacoes;
-//    }
-    
-    
 }

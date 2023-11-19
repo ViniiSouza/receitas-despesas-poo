@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.io.BufferedReader;
@@ -31,6 +27,7 @@ public class ManipuladorArquivo {
         }
     }
     
+    // 1) Incluir receitas. Uma receita deve ser categorizável e deve ser possível informar a data em que a receita ocorreu (ou vai ocorrer);
     public static void incluirTransacao(Transacao transacao) {
         var lista = lerArquivo();
         lista.add(transacao);
