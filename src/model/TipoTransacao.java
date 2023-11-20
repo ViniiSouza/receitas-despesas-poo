@@ -13,7 +13,7 @@ public class TipoTransacao {
         this.descricao = descricao;
     }
     
-    public static TipoTransacao getTipoTransacaoPorDescricao(String descricao) {
+    public static TipoTransacao getTipoTransacaoPorDescricao(String descricao) throws IllegalArgumentException {
         switch (descricao.toLowerCase()) {
             case "recebimento de salário":
                 return new TipoTransacao("SALARIO", "Recebimento de Salário");
@@ -40,7 +40,7 @@ public class TipoTransacao {
         }
     }
     
-    public static TipoTransacao getTipoTransacaoPorCodigo(String codigo) {
+    public static TipoTransacao getTipoTransacaoPorCodigo(String codigo) throws IllegalArgumentException {
         switch (codigo) {
             case "ALIMENTACAO":
                 return new TipoTransacao("ALIMENTACAO", "Alimentação");

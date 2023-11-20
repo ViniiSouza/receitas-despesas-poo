@@ -17,22 +17,22 @@ import java.util.LinkedList;
 public class ManipuladorArquivo {
     private static final String CAMINHO_ARQUIVO = "C:/Windows/Temp/ReceitaDespesaArquivo.csv";
     private static final String COLUNAS = "Categoria;Tipo;Data;Valor";
-    
-    
-    private static void escreverArquivo(String conteudo) {
+    private static LinkedList<Transacao> transacoes;
+
+    private static void escreverArquivo(String conteudo) throws IllegalArgumentException {
         try(BufferedWriter writer  = new BufferedWriter(new FileWriter(CAMINHO_ARQUIVO))) {
             writer.write(conteudo);
         } catch (IOException e) {
-            // tratar exceção
+            throw new IllegalArgumentException("Erro ao escrever no arquivo");
         }
     }
     
     // 1) Incluir receitas. Uma receita deve ser categorizável e deve ser possível informar a data em que a receita ocorreu (ou vai ocorrer);
-    public static void incluirTransacao(Transacao transacao) {
-        var lista = lerArquivo();
-        lista.add(transacao);
+    public static void incluirTransacao(Transacao transacao) throws IllegalArgumentException {
+        transacoes = lerArquivo();
+        transacoes.add(transacao);
         String conteudoArquivo = COLUNAS;
-        for (var item : lista) {
+        for (var item : transacoes) {
             conteudoArquivo += String.format("\n%s;%s;%s;%s",
                     item.getCategoria().toString(),
                     item.getTipoTransacao().getCodigo(),
@@ -43,12 +43,14 @@ public class ManipuladorArquivo {
         escreverArquivo(conteudoArquivo);
     }
     
-    public static LinkedList<Transacao> lerArquivo() {
-        LinkedList<Transacao> lista = new LinkedList<>();
+    public static LinkedList<Transacao> lerArquivo() throws IllegalArgumentException {
+        
+        LinkedList<Transacao> transacoes = new LinkedList<>();
         
         if (!new File(CAMINHO_ARQUIVO).exists()) {
-            return lista;
+            return(transacoes);
         }
+        
         try (BufferedReader reader = new BufferedReader(new FileReader(CAMINHO_ARQUIVO))) {
             String linha;
             var cabecalho = true;
@@ -64,16 +66,16 @@ public class ManipuladorArquivo {
                 var saldo = Double.parseDouble(item[3]);
                 if (categoria == CategoriaTransacao.DESPESA) {
                     var despesa = new Despesa(saldo, tipo, data);
-                    lista.add(despesa);
+                    transacoes.add(despesa);
                 } else {
                     var receita = new Receita(saldo, tipo, data);
-                    lista.add(receita);
+                    transacoes.add(receita);
                 }
             }
-        } catch (IOException e) {
-            // tratar exceção
+        } catch (IOException e){
+            throw new IllegalArgumentException("Erro de leitura de arquivo!");
         }
         
-        return lista;
+        return transacoes;
     }
 }
