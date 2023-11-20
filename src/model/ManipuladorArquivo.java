@@ -15,11 +15,11 @@ import java.util.LinkedList;
  * @author Vinícius
  */
 public class ManipuladorArquivo {
-    private static final String CAMINHO_ARQUIVO = "C:/Windows/Temp/ReceitaDespesaArquivo.csv";
+    private static String CAMINHO_ARQUIVO = "C:/Windows/Temp/ReceitaDespesaArquivo.csv";
     private static final String COLUNAS = "Categoria;Tipo;Data;Valor";
     private static LinkedList<Transacao> transacoes;
 
-    private static void escreverArquivo(String conteudo) throws IllegalArgumentException {
+    public static void escreverArquivo(String conteudo) throws IllegalArgumentException {
         try(BufferedWriter writer  = new BufferedWriter(new FileWriter(CAMINHO_ARQUIVO))) {
             writer.write(conteudo);
         } catch (IOException e) {
@@ -32,6 +32,7 @@ public class ManipuladorArquivo {
         transacoes = lerArquivo();
         transacoes.add(transacao);
         String conteudoArquivo = COLUNAS;
+        
         for (var item : transacoes) {
             conteudoArquivo += String.format("\n%s;%s;%s;%s",
                     item.getCategoria().toString(),
@@ -77,5 +78,9 @@ public class ManipuladorArquivo {
         }
         
         return transacoes;
+    }
+    
+    public static void setCAMINHO_ARQUIVO(String CAMINHO_ARQUIVO) {
+        ManipuladorArquivo.CAMINHO_ARQUIVO = CAMINHO_ARQUIVO;
     }
 }

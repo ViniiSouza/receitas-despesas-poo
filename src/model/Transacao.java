@@ -17,6 +17,11 @@ public abstract class Transacao {
         if (!getTipoTransacoesValidas().stream().anyMatch(item -> item.getCodigo().equals(categoria.getCodigo()))) {
             throw new IllegalArgumentException("O tipo de transação fornecido não é válido!");
         }
+        
+        if(valor <= 0){
+            throw new IllegalArgumentException("O valor fornecido não é válido!");
+        }
+        
         this.valor = valor;
         this.tipoTransacao = categoria;
         this.data = data;
