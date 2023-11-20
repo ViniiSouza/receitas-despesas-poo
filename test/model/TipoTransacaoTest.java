@@ -4,6 +4,8 @@
  */
 package model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -27,12 +29,19 @@ public class TipoTransacaoTest {
     
     @Test 
     public void testRetornoTransacaoPorCodigo() {
-        TipoTransacao.getTipoTransacaoPorCodigo("ALIMENTACAO");
+        String codigo = "ALIMENTACAO";
+        TipoTransacao tipo = TipoTransacao.getTipoTransacaoPorCodigo(codigo);
         
+        assertNotNull(tipo);
+        assertEquals(codigo, tipo.getCodigo());
     }
     
     @Test 
     public void testRetornoTransacaoPorDescricao() {
-        TipoTransacao.getTipoTransacaoPorDescricao("outras");
+        String codigo = "OUTRAS";
+        TipoTransacao tipo = TipoTransacao.getTipoTransacaoPorDescricao(codigo);
+        
+        assertNotNull(tipo);
+        assertEquals(codigo, tipo.getCodigo());
     }
 }
