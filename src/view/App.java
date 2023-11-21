@@ -36,7 +36,10 @@ public class App extends javax.swing.JFrame {
     
     private static boolean validarValorValido(String valorStr) {
         try {
-            Double.valueOf(valorStr);
+            
+            var valorConvertido = Double.valueOf(valorStr);
+            if (valorConvertido <= 0)
+                return false;
             return true;
         } catch (NumberFormatException e) {
             return false;
