@@ -36,7 +36,7 @@ public class ControleSaldo {
         return saldo;
     }
     
-    private static double calcularSaldoTransacoes(LinkedList<Transacao> transacoes) {
+    private static double calcularSaldoTransacoes(LinkedList<Transacao> transacoes) throws IllegalArgumentException {
         if (transacoes == null || transacoes.isEmpty()) {
             throw new IllegalArgumentException("Lista de transações vazia ou nula.");
         }

@@ -95,7 +95,12 @@ public class App extends javax.swing.JFrame {
         }
 
         // salvar no arquivo        
-        ManipuladorArquivo.incluirTransacao(transacao);
+        try {
+            ManipuladorArquivo.incluirTransacao(transacao);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         
         return true;
     }
@@ -563,12 +568,23 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btConsultarSaldoAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarSaldoAtualActionPerformed
-        var saldo = ControleSaldo.calcularSaldoAteDataAtual();
-        lbConsultaSaldoDataAtual.setText(String.format("R$ %.2f", saldo));
+        try {
+            Double saldo = ControleSaldo.calcularSaldoAteDataAtual();
+            lbConsultaSaldoDataAtual.setText(String.format("R$ %.2f", saldo));
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btConsultarSaldoAtualActionPerformed
 
     private void btConsultarReceitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarReceitasActionPerformed
-        var receitas = ControleSaldo.retornaTransacoesDeReceita();
+        LinkedList<Transacao> receitas;
+        try {
+            receitas = ControleSaldo.retornaTransacoesDeReceita();
+        }
+        catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         DefaultTableModel modelo = (DefaultTableModel) tbConsultarReceita.getModel();
         modelo.setRowCount(0);
         var modeloColuna = tbConsultarReceita.getColumnModel();
@@ -593,7 +609,12 @@ public class App extends javax.swing.JFrame {
             despesas = ControleSaldo.retornaTransacoesDeDespesa(tipo);
         }
         catch (IllegalArgumentException e) {
-            despesas = ControleSaldo.retornaTransacoesDeDespesa(null);
+            try {
+                despesas = ControleSaldo.retornaTransacoesDeDespesa(null);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
         
         DefaultTableModel modelo = (DefaultTableModel) tbConsultarDespesaFiltrada.getModel();
@@ -612,7 +633,12 @@ public class App extends javax.swing.JFrame {
     // 7) Listar todos os lançamentos (receitas e despesas) ordenados por data. A cada lançamento, exibir como aquele
     // lançamento impactou no saldo. Isto é, totalizar o saldo até aquele momento, assim como ocorre num extrato;
     private void btConsultarLancamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarLancamentosActionPerformed
-        var transacoes = ManipuladorArquivo.lerArquivo();
+        LinkedList<Transacao> transacoes = new LinkedList<>();
+        try {
+            transacoes = ManipuladorArquivo.lerArquivo();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
         Collections.sort(transacoes, Comparator.comparing(Transacao::getData));
         
         DefaultTableModel modelo = (DefaultTableModel) tbConsultarLancamentos.getModel();
@@ -662,8 +688,12 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_btIncluirDespesaActionPerformed
 
     private void btConsultarSaldoIndependenteDaDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConsultarSaldoIndependenteDaDataActionPerformed
-        var saldo = ControleSaldo.calcularTotalSaldo();
-        lbConsultaSaldoIndependenteDoPeriodo.setText(String.format("R$ %.2f", saldo));
+        try {
+            var saldo = ControleSaldo.calcularTotalSaldo();
+            lbConsultaSaldoIndependenteDoPeriodo.setText(String.format("R$ %.2f", saldo));
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btConsultarSaldoIndependenteDaDataActionPerformed
 
     /**
