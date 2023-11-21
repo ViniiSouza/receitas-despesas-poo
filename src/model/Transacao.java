@@ -13,8 +13,15 @@ public abstract class Transacao {
     private LocalDate data;
     private CategoriaTransacao categoria;
 
-    public Transacao(double valor, TipoTransacao categoria, LocalDate data, CategoriaTransacao tipoTransacao) {
-        if (!getTipoTransacoesValidas().stream().anyMatch(item -> item.getCodigo().equals(categoria.getCodigo()))) {
+    /**
+     * Cria um objeto Transacao, fazendo a validação se o tipo transação informado é válido para a categoria da transação
+     * @param valor Valor da transação
+     * @param tipo Tipo da transação
+     * @param data Data da transação
+     * @param categoriaTransacao Categoria da transação (receita ou despesa)
+     */
+    public Transacao(double valor, TipoTransacao tipo, LocalDate data, CategoriaTransacao categoriaTransacao) {
+        if (!getTipoTransacoesValidas().stream().anyMatch(item -> item.getCodigo().equals(tipo.getCodigo()))) {
             throw new IllegalArgumentException("O tipo de transação fornecido não é válido!");
         }
         
@@ -23,9 +30,9 @@ public abstract class Transacao {
         }
         
         this.valor = valor;
-        this.tipoTransacao = categoria;
+        this.tipoTransacao = tipo;
         this.data = data;
-        this.categoria = tipoTransacao;
+        this.categoria = categoriaTransacao;
     }
     
     public abstract LinkedList<TipoTransacao> getTipoTransacoesValidas();

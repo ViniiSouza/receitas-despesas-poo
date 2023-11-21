@@ -19,6 +19,11 @@ public class ManipuladorArquivo {
     private static final String COLUNAS = "Categoria;Tipo;Data;Valor";
     private static LinkedList<Transacao> transacoes;
 
+    /**
+     * Realiza a escrita do conteúdo no arquivo e salva
+     * @param conteudo Conteúdo do arquivo
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static void escreverArquivo(String conteudo) throws IllegalArgumentException {
         try(BufferedWriter writer  = new BufferedWriter(new FileWriter(CAMINHO_ARQUIVO))) {
             writer.write(conteudo);
@@ -28,6 +33,11 @@ public class ManipuladorArquivo {
     }
     
     // 1) Incluir receitas. Uma receita deve ser categorizável e deve ser possível informar a data em que a receita ocorreu (ou vai ocorrer);
+    /**
+     * Lê todas as transações do arquivo e inclui a transação recebida na lista
+     * @param transacao Transação a incluir
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static void incluirTransacao(Transacao transacao) throws IllegalArgumentException {
         transacoes = lerArquivo();
         transacoes.add(transacao);
@@ -44,6 +54,11 @@ public class ManipuladorArquivo {
         escreverArquivo(conteudoArquivo);
     }
     
+    /**
+     * Realiza a leitura do arquivo
+     * @return Llista de transações encontradas
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static LinkedList<Transacao> lerArquivo() throws IllegalArgumentException {
         
         LinkedList<Transacao> transacoes = new LinkedList<>();
@@ -80,6 +95,10 @@ public class ManipuladorArquivo {
         return transacoes;
     }
     
+    /**
+     * Realiza a alteração do caminho do arquivo (uso exclusivo para testes)
+     * @param CAMINHO_ARQUIVO novo caminho do arquivo
+     */
     public static void setCAMINHO_ARQUIVO(String CAMINHO_ARQUIVO) {
         ManipuladorArquivo.CAMINHO_ARQUIVO = CAMINHO_ARQUIVO;
     }

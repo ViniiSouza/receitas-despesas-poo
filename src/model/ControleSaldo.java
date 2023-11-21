@@ -18,6 +18,11 @@ public class ControleSaldo {
     private static LinkedList<Transacao> transacoes;
     
     // 3) Consultar o saldo que a pessoa tem disponível até a data atual;
+    /**
+     * Busca transações no arquivo e realiza o cálculo do saldo com as transações até a data atual
+     * @return O saldo calculado
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static double calcularSaldoAteDataAtual() throws IllegalArgumentException {
         LocalDate dataAtual = LocalDate.now();
         transacoes = ManipuladorArquivo.lerArquivo();  
@@ -28,6 +33,11 @@ public class ControleSaldo {
     }
     
     // 4) Consultar o saldo que a pessoa terá disponível, independente do período;
+    /**
+     * Busca transações no arquivo e realiza o cálculo do saldo com todas as transações
+     * @return O saldo calculado
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static double calcularTotalSaldo() throws IllegalArgumentException
     {
         transacoes = ManipuladorArquivo.lerArquivo();
@@ -36,6 +46,12 @@ public class ControleSaldo {
         return saldo;
     }
     
+    /**
+     * Realiza o cálculo do saldo com base nas transações fornecidas
+     * @param transacoes transações a se calcular
+     * @return O saldo calculado
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     private static double calcularSaldoTransacoes(LinkedList<Transacao> transacoes) throws IllegalArgumentException {
         if (transacoes == null || transacoes.isEmpty()) {
             throw new IllegalArgumentException("Lista de transações vazia ou nula.");
@@ -54,6 +70,11 @@ public class ControleSaldo {
     }
     
     // 5) Listar todas as receitas lançadas;
+    /**
+     * Busca as transações e filtra apenas as de receita
+     * @return A lista de transações do tipo receita
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static LinkedList<Transacao> retornaTransacoesDeReceita() throws IllegalArgumentException{
         transacoes = ManipuladorArquivo.lerArquivo();
         var listaReceitas = transacoes.stream().filter(item -> item.getCategoria() == CategoriaTransacao.RECEITA).collect(Collectors.toList());
@@ -62,6 +83,12 @@ public class ControleSaldo {
     }
     
     // 6) Listar todas as despesas lançadas, possibilitando que o usuário filtre por tipo de despesa;
+    /**
+     * Busca as transações e filtra apenas as de despesa, caso seja fornecido um filtro de tipo, também é filtrado apenas pelo tipo
+     * @param tipo Tipo de despesa (opcional)
+     * @return A lista de transações filtrada
+     * @throws IllegalArgumentException caso ocorra um erro na leitura do arquivo
+     */
     public static LinkedList<Transacao> retornaTransacoesDeDespesa(TipoTransacao tipo) throws IllegalArgumentException{
         transacoes = ManipuladorArquivo.lerArquivo();
         var despesas = transacoes.stream().filter(item -> item.getCategoria() == CategoriaTransacao.DESPESA && (tipo == null || item.getTipoTransacao().getCodigo().equals(tipo.getCodigo()))).collect(Collectors.toList());

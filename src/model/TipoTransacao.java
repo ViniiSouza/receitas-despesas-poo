@@ -13,6 +13,12 @@ public class TipoTransacao {
         this.descricao = descricao;
     }
     
+    /**
+     * Valida a descrição informada e atribui para o tipo correspondente
+     * @param descricao Descrição do tipo de transação
+     * @return O tipo de transação correspondente
+     * @throws IllegalArgumentException caso a descrição não seja válida
+     */
     public static TipoTransacao getTipoTransacaoPorDescricao(String descricao) throws IllegalArgumentException {
         switch (descricao.toLowerCase()) {
             case "recebimento de salário":
@@ -40,6 +46,12 @@ public class TipoTransacao {
         }
     }
     
+    /**
+     * Valida o código informado e atribui para o tipo correspondente
+     * @param codigo Código do tipo de transação
+     * @return O tipo de transação correspondente
+     * @throws IllegalArgumentException caso o código não seja válido
+     */
     public static TipoTransacao getTipoTransacaoPorCodigo(String codigo) throws IllegalArgumentException {
         switch (codigo) {
             case "ALIMENTACAO":
