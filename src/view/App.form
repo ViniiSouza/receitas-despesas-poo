@@ -524,7 +524,7 @@
                 <StringItem index="4" value="Sa&#xfa;de"/>
                 <StringItem index="5" value="Educa&#xe7;&#xe3;o"/>
                 <StringItem index="6" value="Entretenimento"/>
-                <StringItem index="7" value="Outras Despesas"/>
+                <StringItem index="7" value="Outras"/>
               </StringArray>
             </Property>
           </Properties>

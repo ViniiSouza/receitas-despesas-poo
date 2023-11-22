@@ -397,7 +397,7 @@ public class App extends javax.swing.JFrame {
 
         PanelConsultaDespesa.setBorder(javax.swing.BorderFactory.createTitledBorder("Consulta de Despesa"));
 
-        cbTipoDeDespesaConsulta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Alimentação", "Transporte", "Residência", "Saúde", "Educação", "Entretenimento", "Outras Despesas" }));
+        cbTipoDeDespesaConsulta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Alimentação", "Transporte", "Residência", "Saúde", "Educação", "Entretenimento", "Outras" }));
         cbTipoDeDespesaConsulta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTipoDeDespesaConsultaActionPerformed(evt);
